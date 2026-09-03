@@ -3,10 +3,12 @@ import fs from 'node:fs';
 
 fs.rmSync(new URL('./.data', import.meta.url), { recursive: true, force: true });
 
+// DATA_DIR esplicito: il test deve restare deterministico a prescindere da
+// cosa esista gia' sull'host (es. una /data non correlata al volume Railway).
 const PORT = 3444, K = 'segreto', B = `http://127.0.0.1:${PORT}`;
 const srv = spawn(process.execPath, ['server.js'], {
   cwd: new URL('.', import.meta.url).pathname,
-  env: { ...process.env, PORT: String(PORT), AUTH_TOKEN: K },
+  env: { ...process.env, PORT: String(PORT), AUTH_TOKEN: K, DATA_DIR: new URL('./.data', import.meta.url).pathname },
   stdio: ['ignore', 'pipe', 'pipe'],
 });
 let log = '';
