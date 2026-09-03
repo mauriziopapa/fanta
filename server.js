@@ -11,9 +11,10 @@ const DIR = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC = path.join(DIR, 'public');
 const PORT = process.env.PORT || 3000;
 
-// Su Railway monta un Volume e imposta DATA_DIR al suo mount path (es. /data),
-// altrimenti lo stato vive solo fino al prossimo deploy.
-const DATA_DIR = process.env.DATA_DIR || path.join(DIR, '.data');
+// Su Railway monta un Volume sul path /data: se e' presente lo usiamo in automatico,
+// cosi' lo stato sopravvive ai redeploy anche senza impostare DATA_DIR a mano.
+// DATA_DIR resta disponibile per forzare un percorso diverso.
+const DATA_DIR = process.env.DATA_DIR || (fsSync.existsSync('/data') ? '/data' : path.join(DIR, '.data'));
 const STATE = path.join(DATA_DIR, 'state.json');
 fsSync.mkdirSync(DATA_DIR, { recursive: true });
 

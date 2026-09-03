@@ -14,10 +14,11 @@ Nessuna dipendenza npm: gira con il solo Node 20+.
 3. **Settings → Networking → Generate Domain** per ottenere l'indirizzo pubblico.
 4. **Variables**, aggiungi:
    - `AUTH_TOKEN` — una parola a tua scelta. Senza questa il sito e' pubblico.
-   - `DATA_DIR=/data` — solo se aggiungi il volume del punto 5.
-5. **Storage → Add Volume**, mount path `/data`. Senza volume lo stato
-   dell'asta si perde a ogni nuovo deploy (durante la serata non succede,
-   ma meglio metterlo).
+5. **Storage → Add Volume**, mount path `/data`. Il server rileva da solo il
+   volume su `/data` e ci scrive lo stato (nessuna variabile da impostare);
+   senza volume lo stato si perde a ogni nuovo deploy (durante la serata non
+   succede, ma meglio metterlo). Per forzare un percorso diverso c'e' comunque
+   la variabile `DATA_DIR`.
 
 Poi apri `https://TUO-DOMINIO.up.railway.app/?k=LA_TUA_CHIAVE` una volta:
 la chiave finisce in un cookie che dura un anno, e da li' in poi basta
