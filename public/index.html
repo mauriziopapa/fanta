@@ -45,9 +45,13 @@
   .kv:last-child{border-bottom:none}
   .kv span:first-child{color:var(--dim)}
 
-  .rep{display:flex;justify-content:space-between;align-items:center;padding:7px 0;
-    border-bottom:1px solid #1b2027;font-size:13px}
-  .rep:last-child{border-bottom:none}
+  .rep-group{border-bottom:1px solid #1b2027}
+  .rep-group:last-child{border-bottom:none}
+  .rep{display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:13px}
+  .rep-players{padding:0 0 8px 26px;display:flex;flex-direction:column}
+  .rep-players .kv{padding:3px 0;border-bottom:none;font-size:12px}
+  .rep-players .kv span:first-child{color:var(--dim)}
+  .rep-players .kv b{font-weight:600;color:var(--txt)}
   .rp{display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;
     border-radius:4px;font-size:11px;font-weight:700;color:#0e1013;flex:none}
 
@@ -552,6 +556,7 @@ function render(){
   ['P','D','C','A'].forEach(ru=>{
     const g=got().filter(p=>p.role===ru);
     const v=g.reduce((s,p)=>s+(+p.paid||0),0);
+    const group=document.createElement('div'); group.className='rep-group';
     const d=document.createElement('div'); d.className='rep';
     const dl=v-TARGET[ru], full=g.length===SLOTS[ru];
     const col= full ? (dl>0?'var(--bad)':'var(--ok)') : (dl>0?'var(--warn)':'var(--dim2)');
@@ -559,7 +564,20 @@ function render(){
       ' <span class="team">'+g.length+'/'+SLOTS[ru]+'</span></span>'+
       '<span class="num"><b>'+v+'</b> / '+TARGET[ru]+' <span style="color:'+col+'">'+
       (dl>=0?'+':'')+dl+'</span></span>';
-    rep.appendChild(d);
+    group.appendChild(d);
+    if(g.length){
+      const list=document.createElement('div'); list.className='rep-players';
+      g.slice().sort((a,b)=>(+b.paid||0)-(+a.paid||0)).forEach(p=>{
+        const row=document.createElement('div'); row.className='kv';
+        const nameEl=document.createElement('span'), costEl=document.createElement('b'); costEl.className='num';
+        nameEl.textContent=p.name+(p.team?' · '+p.team:'');
+        costEl.textContent=p.paid!=null?p.paid:0;
+        row.appendChild(nameEl); row.appendChild(costEl);
+        list.appendChild(row);
+      });
+      group.appendChild(list);
+    }
+    rep.appendChild(group);
   });
 
   const m=modificatore();
