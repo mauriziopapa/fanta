@@ -1,3 +1,6 @@
+<!doctype html>
+<html lang="it">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Asta dal vivo 2026/27 — 11 partecipanti</title>
@@ -120,19 +123,21 @@
     h1{font-size:17px}
     header{padding-bottom:10px;margin-bottom:10px}
     .hbtns{width:100%}
-    .hbtns button{flex:1;min-width:0;font-size:12px;padding:8px 6px}
+    .hbtns button{flex:1;min-width:0;font-size:12px;padding:8px 6px;min-height:44px}
     #save{text-align:left;margin-top:4px}
     .big{font-size:32px}
     .card{padding:12px}
-    .sticky{display:flex;position:sticky;top:0;z-index:40;gap:0;margin:-12px -12px 10px;
-      padding:9px 12px;background:rgba(14,16,19,.94);backdrop-filter:blur(8px);
-      border-bottom:1px solid var(--line);justify-content:space-between}
-    .sticky div{text-align:center;flex:1}
+    .sticky{display:flex;flex-wrap:wrap;position:sticky;top:0;z-index:40;gap:6px 0;
+      margin:-12px -12px 10px;padding:9px 12px;background:var(--bg);
+      border-bottom:1px solid var(--line);justify-content:center}
+    .sticky div{text-align:center;flex:1 1 25%;min-width:78px}
     .sticky b{display:block;font-size:17px;font-weight:700;line-height:1.2}
     .sticky span{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--dim2)}
-    .toolbar input,.toolbar select{flex:1 1 45%;min-width:0}
-    .quick input,.quick select{flex:1 1 46%;min-width:0}
-    .quick button{flex:1 1 46%}
+    .toolbar input,.toolbar select{flex:1 1 45%;min-width:0;min-height:44px}
+    .quick input,.quick select{flex:1 1 46%;min-width:0;min-height:44px}
+    .quick button{flex:1 1 100%;min-height:46px;font-size:14px}
+    .sep{padding:12px 10px;min-height:44px;align-items:center}
+    .qres-item{padding:11px 9px;min-height:44px;box-sizing:border-box}
     .row{padding:11px 8px;gap:8px;align-items:flex-start}
     .info{flex:1 1 100%}
     .meta{order:2}
@@ -191,11 +196,21 @@
     .r1 .name{font-size:16px}
     .stepper input{width:74px;font-size:19px;min-height:46px}
     .stepper button{min-width:46px;min-height:46px}
-    .r2 .go button{min-height:46px;padding:0 18px}
+    /* Preso/Perso/Annulla + il cestino non entravano mai su una riga sola
+       (stepper + azioni superavano la larghezza disponibile), causando
+       overflow orizzontale su tutta la pagina. Le azioni vanno ora a capo
+       su una riga propria, con Preso/Perso/Annulla allargati in egual
+       misura: tap target grandi, niente piu' tagli laterali. */
+    .r2{flex-wrap:wrap;row-gap:8px}
+    .r2 .go{flex:1 1 100%;margin-left:0}
+    .r2 .go button{min-height:46px}
+    .r2 .go button:not(.xdel){flex:1;padding:0 12px}
+    .xdel{min-width:46px}
     .cap{display:none}
   }
 </style>
-
+</head>
+<body>
 
 <div class="sticky">
   <div><b class="num" id="sRim">1000</b><span>residui</span></div>
@@ -799,3 +814,5 @@ function resetAll(){ if(!confirm('Azzeri tutta l\'asta?'))return; snap('Asta azz
 load();
 loadDB();
 </script>
+</body>
+</html>
