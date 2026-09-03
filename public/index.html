@@ -80,7 +80,11 @@
 
   .sep{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--dim);
     font-weight:700;background:#11151a;padding:8px 10px;border-radius:4px;margin:10px 0 6px;
-    display:flex;justify-content:space-between;gap:8px}
+    display:flex;justify-content:space-between;gap:8px;cursor:pointer;user-select:none}
+  .sep:active{background:#161c24}
+  @media(hover:hover){ .sep:hover{background:#161c24} }
+  .sep .chev{display:inline-block;color:var(--dim2);width:10px}
+  .sep .sep-n{color:var(--dim2);font-weight:400;text-transform:none;letter-spacing:0}
   .row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-bottom:1px solid #1b2027;flex-wrap:wrap}
   .row.done{background:#12200f;border-radius:4px;border-bottom-color:#1e3a15}
   .row.lost{opacity:.42}
@@ -373,6 +377,7 @@ function fresh(){
       mv:r[5], pri:r[6], note:r[7], status:'target', paid:null}))};
 }
 let S=fresh(), last=null, tmr=null, undoTmr=null, BACKEND='none';
+let roleOpen={P:true,D:true,C:true,A:true}; // stato dei pannelli a scomparsa per ruolo
 
 /* ---------- undo ---------- */
 function find(id){ return S.players.find(p=>p.id===id); }
@@ -622,10 +627,13 @@ function render(){
     if(!ps.length) return;
     ps.sort((a,b)=>(a.pri??9)-(b.pri??9)||(b.fair||0)-(a.fair||0));
     const g=got().filter(p=>p.role===ru);
-    const sep=document.createElement('div'); sep.className='sep';
-    sep.innerHTML='<span>'+LABEL[ru]+'</span><span class="num">'+g.length+' / '+SLOTS[ru]+'</span>';
+    const open=roleOpen[ru]!==false;
+    const sep=document.createElement('div'); sep.className='sep'+(open?' open':'');
+    sep.innerHTML='<span><i class="chev">'+(open?'▾':'▸')+'</i> '+LABEL[ru]+
+      ' <span class="sep-n">('+ps.length+')</span></span><span class="num">'+g.length+' / '+SLOTS[ru]+'</span>';
+    sep.onclick=()=>{ roleOpen[ru]=!open; render(); };
     list.appendChild(sep);
-    ps.forEach(p=>list.appendChild(rowEl(p)));
+    if(open) ps.forEach(p=>list.appendChild(rowEl(p)));
   });
   save();
 }
