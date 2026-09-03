@@ -1,0 +1,676 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Asta dal vivo 2026/27 — 11 partecipanti</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  :root{
+    --bg:#0e1013; --panel:#161a20; --panel2:#1d222a; --line:#2a3038;
+    --txt:#e6e9ee; --dim:#8b95a3; --dim2:#5f6a78;
+    --ok:#35d07f; --warn:#f0b429; --bad:#ef5350; --acc:#4d9fff;
+    --P:#f0b429; --D:#4d9fff; --C:#35d07f; --A:#ff7a59;
+  }
+  body{background:var(--bg);color:var(--txt);
+    font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    font-size:14px;line-height:1.45;padding:16px 18px 70px;max-width:1500px;margin:0 auto}
+  .num{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+  h1{font-size:19px;font-weight:700;letter-spacing:-.2px}
+  .sub{color:var(--dim);font-size:12px;margin-top:2px}
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;
+    border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:14px;flex-wrap:wrap}
+  .hbtns{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+
+  button{font-family:inherit;font-size:13px;background:var(--panel2);color:var(--txt);
+    border:1px solid var(--line);padding:7px 12px;cursor:pointer;border-radius:4px;min-height:36px}
+  button:active{transform:translateY(1px)}
+  button.p{background:#1e3a2a;border-color:#2f6b48;color:#8ff0bd}
+  button.n{background:#3a1e1e;border-color:#6b2f2f;color:#f0a5a5}
+  button.act{background:#22303f;border-color:#3d5a78;color:#a8cdf5}
+  button.del{color:var(--dim2);background:none;border:none;padding:6px 8px;font-size:16px;min-height:32px}
+  button.del:active{color:var(--bad)}
+  input,select{font-family:inherit;font-size:16px;background:#0b0d10;color:var(--txt);
+    border:1px solid var(--line);padding:7px 9px;border-radius:4px;min-height:36px;max-width:100%}
+  input:focus,select:focus{outline:none;border-color:var(--acc)}
+
+  .grid{display:grid;grid-template-columns:330px 1fr;gap:14px;align-items:start}
+  .col{display:flex;flex-direction:column;gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px}
+  .card h2{font-size:11px;text-transform:uppercase;letter-spacing:1.2px;color:var(--dim);
+    font-weight:600;margin-bottom:10px}
+
+  .big{font-size:36px;font-weight:700;letter-spacing:-1.2px;line-height:1}
+  .big small{font-size:13px;color:var(--dim);font-weight:400;letter-spacing:0}
+  .bar{height:8px;background:#0b0d10;border-radius:4px;overflow:hidden;margin:10px 0 4px;display:flex}
+  .bar i{display:block;height:100%}
+  .kv{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #21262e;font-size:13px}
+  .kv:last-child{border-bottom:none}
+  .kv span:first-child{color:var(--dim)}
+
+  .rep{display:flex;justify-content:space-between;align-items:center;padding:7px 0;
+    border-bottom:1px solid #1b2027;font-size:13px}
+  .rep:last-child{border-bottom:none}
+  .rp{display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;
+    border-radius:4px;font-size:11px;font-weight:700;color:#0e1013;flex:none}
+
+  .mod{font-size:44px;font-weight:700;letter-spacing:-2px;line-height:1}
+  .alert{border-left:3px solid var(--warn);background:#241d0d;padding:8px 10px;margin-top:8px;
+    font-size:12px;border-radius:0 4px 4px 0}
+  .alert.b{border-color:var(--bad);background:#241212}
+  .alert.g{border-color:var(--ok);background:#12241a}
+
+  .toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+  .quick{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:var(--panel2);
+    border:1px solid var(--line);border-radius:5px;padding:9px 10px;margin-bottom:12px}
+  .qlab{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dim2);font-weight:700;width:100%}
+
+  .sep{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--dim);
+    font-weight:700;background:#11151a;padding:8px 10px;border-radius:4px;margin:10px 0 6px;
+    display:flex;justify-content:space-between;gap:8px}
+  .row{display:flex;align-items:center;gap:10px;padding:9px 10px;border-bottom:1px solid #1b2027;flex-wrap:wrap}
+  .row.done{background:#12200f;border-radius:4px;border-bottom-color:#1e3a15}
+  .row.lost{opacity:.42}
+  .info{flex:1 1 210px;min-width:0}
+  .name{font-weight:600;font-size:14px}
+  .team{color:var(--dim);font-size:12px}
+  .note{color:var(--dim2);font-size:11px;margin-top:1px}
+  .star{color:var(--warn)}
+  .meta{display:flex;gap:8px;align-items:center;flex:none}
+  .ask{font-size:13px;font-weight:600;color:var(--dim);min-width:44px;text-align:right}
+  .acts{display:flex;gap:6px;align-items:center;flex:none}
+  input.mv{width:64px;text-align:right}
+  input.paid{width:76px;text-align:right;border-color:#2f6b48;font-weight:700}
+  .chip{display:inline-block;padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700;
+    letter-spacing:.4px;border:1px solid}
+  .c-ok{color:var(--ok);border-color:#2a5d40;background:#12241a}
+  .c-no{color:var(--bad);border-color:#5d2a2a;background:#241212}
+
+  .undo{position:fixed;left:50%;transform:translateX(-50%);bottom:16px;z-index:50;
+    background:var(--panel2);border:1px solid var(--line);border-radius:6px;
+    padding:9px 12px;display:none;gap:12px;align-items:center;font-size:13px;
+    box-shadow:0 6px 22px rgba(0,0,0,.6)}
+  .undo.on{display:flex}
+
+  .sticky{display:none}
+  footer{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);
+    color:var(--dim2);font-size:11px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  #save{color:var(--dim2);font-size:11px;width:100%;text-align:right}
+
+  @media(max-width:1000px){ .grid{grid-template-columns:1fr} }
+  @media(max-width:760px){
+    body{padding:12px 12px 80px;font-size:15px}
+    h1{font-size:17px}
+    header{padding-bottom:10px;margin-bottom:10px}
+    .hbtns{width:100%}
+    .hbtns button{flex:1;min-width:0;font-size:12px;padding:8px 6px}
+    #save{text-align:left;margin-top:4px}
+    .big{font-size:32px}
+    .card{padding:12px}
+    .sticky{display:flex;position:sticky;top:0;z-index:40;gap:0;margin:-12px -12px 10px;
+      padding:9px 12px;background:rgba(14,16,19,.94);backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--line);justify-content:space-between}
+    .sticky div{text-align:center;flex:1}
+    .sticky b{display:block;font-size:17px;font-weight:700;line-height:1.2}
+    .sticky span{font-size:9px;text-transform:uppercase;letter-spacing:.8px;color:var(--dim2)}
+    .toolbar input,.toolbar select{flex:1 1 45%;min-width:0}
+    .quick input,.quick select{flex:1 1 46%;min-width:0}
+    .quick button{flex:1 1 46%}
+    .row{padding:11px 8px;gap:8px;align-items:flex-start}
+    .info{flex:1 1 100%}
+    .meta{order:2}
+    .acts{order:3;margin-left:auto}
+    .acts button{padding:8px 14px}
+    .row .del{order:4;margin-left:0}
+    .rp{width:22px;height:22px;line-height:22px}
+    input.paid{width:84px;font-size:17px}
+  }
+</style>
+
+<style>
+  .pri{display:inline-block;min-width:24px;text-align:center;border-radius:3px;font-size:10px;
+    font-weight:700;padding:1px 3px;margin-right:6px}
+  .p1{background:#12241a;color:var(--ok);border:1px solid #2a5d40}
+  .p2{background:#241d0d;color:var(--warn);border:1px solid #5d4a2a}
+  .p3{background:#1d222a;color:var(--dim);border:1px solid var(--line)}
+
+  .row{display:block;padding:11px 10px;border-bottom:1px solid #1b2027}
+  .r1{display:flex;align-items:baseline;gap:8px}
+  .r1 .name{font-weight:600;font-size:15px}
+  .r1 .team{color:var(--dim);font-size:12px}
+  .mvlab{margin-left:auto;flex:none;font-size:12px;color:var(--dim);
+    font-variant-numeric:tabular-nums;white-space:nowrap}
+  .mvlab b{color:var(--txt);font-size:14px}
+  .mvin{width:62px;text-align:right;min-height:32px;padding:4px 6px;font-size:15px}
+  .note{color:var(--dim2);font-size:11.5px;margin:3px 0 0;line-height:1.35;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .r2{display:flex;align-items:center;gap:8px;margin-top:9px}
+  .stepper{display:flex;align-items:center;border:1px solid var(--line);border-radius:6px;
+    overflow:hidden;background:#0b0d10;flex:none}
+  .stepper button{border:none;background:none;min-width:40px;min-height:42px;font-size:19px;
+    color:var(--dim);border-radius:0;padding:0}
+  .stepper button:active{background:var(--panel2);color:var(--txt)}
+  .stepper input{border:none;background:none;width:66px;text-align:center;font-size:17px;
+    font-weight:700;min-height:42px;font-variant-numeric:tabular-nums;padding:0}
+  .stepper input:focus{outline:none;background:#12161c}
+  .cap{font-size:10.5px;color:var(--dim2);flex:none;line-height:1.25;white-space:nowrap}
+  .cap b{color:var(--bad)}
+  .r2 .go{margin-left:auto;display:flex;gap:6px;flex:none}
+  .r2 .go button{min-height:42px;padding:0 16px;font-size:14px;font-weight:600}
+  .row.done{background:#12200f;border-radius:6px;border-bottom-color:#1e3a15}
+  .row.done .stepper{border-color:#2f6b48}
+  .row.lost{opacity:.4}
+  .xdel{background:none;border:none;color:var(--dim2);font-size:20px;min-width:38px;min-height:42px;padding:0}
+
+  .grid{display:grid;grid-template-columns:330px 1fr;gap:14px;align-items:start}
+  .col-cards{order:1}
+  .col-list{order:2}
+  @media(max-width:1000px){
+    .grid{grid-template-columns:1fr}
+    .col-cards{order:2}
+    .col-list{order:1}
+  }
+  @media(max-width:760px){
+    .r1 .name{font-size:16px}
+    .stepper input{width:74px;font-size:19px;min-height:46px}
+    .stepper button{min-width:46px;min-height:46px}
+    .r2 .go button{min-height:46px;padding:0 18px}
+    .cap{display:none}
+  }
+</style>
+
+
+<div class="sticky">
+  <div><b class="num" id="sRim">1000</b><span>residui</span></div>
+  <div><b class="num" id="sPre">0/25</b><span>presi</span></div>
+  <div><b class="num" id="sMax">976</b><span>max offerta</span></div>
+  <div><b class="num" id="sMod">—</b><span>modificatore</span></div>
+</div>
+
+<header>
+  <div>
+    <h1>Asta dal vivo 2026/27</h1>
+    <div class="sub">11 partecipanti · 1000 crediti · 3-8-8-6 · modulo 4-5-1 · modificatore difesa + centrocampo · capitano · switch</div>
+  </div>
+  <div class="hbtns">
+    <button id="syncb" class="act" style="display:none" onclick="pull()">Sincronizza</button>
+    <button onclick="exportJSON()">Esporta backup</button>
+    <button onclick="document.getElementById('imp').click()">Importa backup</button>
+    <button class="n" onclick="resetAll()">Azzera</button>
+    <input type="file" id="imp" accept="application/json" style="display:none" onchange="importJSON(this)">
+    <div id="save"></div>
+  </div>
+</header>
+
+<div id="nostore" class="alert b" style="display:none;margin-bottom:12px">
+  <b>Aperto come file locale: il browser blocca il salvataggio normale.</b><br>
+  L'asta viene scritta nell'indirizzo della pagina, quindi sopravvive al ricaricamento. Per non perderla del tutto,
+  <b>aggiungi la pagina ai preferiti</b> dopo i primi acquisti, oppure esporta un backup ogni tanto.
+  <div style="margin-top:8px"><button class="act" onclick="exportJSON()">Esporta backup</button></div>
+</div>
+
+<div class="grid">
+ <div class="col col-cards">
+
+  <div class="card">
+    <h2>Budget</h2>
+    <div class="big num"><span id="rim">1000</span> <small>/ 1000</small></div>
+    <div class="bar" id="bar"></div>
+    <div class="kv"><span>Spesi</span><b class="num" id="spesi">0</b></div>
+    <div class="kv"><span>Slot ancora da riempire</span><b class="num" id="slot">25</b></div>
+    <div class="kv"><span>Offerta massima possibile</span><b class="num" id="maxb">976</b></div>
+    <div class="maxbid">L'offerta massima tiene 1 credito per ogni slot ancora vuoto. Se scende sotto il prezzo del tuo obiettivo, quell'obiettivo non e' piu' raggiungibile.</div>
+    <div id="alert"></div>
+  </div>
+
+  <div class="card">
+    <h2>Reparti</h2>
+    <div id="reparti"></div>
+    <div class="maxbid">Il secondo numero e' il budget obiettivo del reparto. Lo scarto diventa rosso solo quando il reparto e' completo e hai sforato.</div>
+  </div>
+
+  <div class="card">
+    <h2>Modificatore di difesa</h2>
+    <div class="mod num" id="modv">—</div>
+    <div class="sub" id="modq">Media di portiere + migliori 3 difensori. Servono 4 difensori a voto.</div>
+    <div id="modlist" style="margin-top:10px"></div>
+  </div>
+
+  <div class="card">
+    <h2>Modificatore di centrocampo</h2>
+    <div class="mod num" id="ccv">—</div>
+    <div class="sub" id="ccq">Somma MV dei 5 centrocampisti migliori. Si confronta con quella dell'avversario.</div>
+    <div id="cclist" style="margin-top:10px"></div>
+    <div class="maxbid">Conta il <b>voto puro</b>: gol, assist e rigori dei centrocampisti qui non valgono nulla. Schiera sempre 5 centrocampisti: chi ne mette meno prende 5 d'ufficio per ognuno mancante.</div>
+  </div>
+
+
+
+ </div>
+
+ <div class="col col-list">
+  <div class="quick">
+    <div class="qlab">Aggiungi un giocatore non in lista</div>
+    <select id="qr"><option value="P">P</option><option value="D">D</option><option value="C" selected>C</option><option value="A">A</option></select>
+    <input id="qn" placeholder="Nome" onkeydown="qkey(event)">
+    <input id="qt" placeholder="Squadra" onkeydown="qkey(event)">
+    <input id="qp" class="num" type="number" inputmode="numeric" placeholder="Pagato" onkeydown="qkey(event)">
+    <input id="qm" class="num" type="number" step="0.01" inputmode="decimal" placeholder="MV" onkeydown="qkey(event)">
+    <button class="p" onclick="quickAdd(true)">Aggiungi come preso</button>
+    <button onclick="quickAdd(false)">Aggiungi come obiettivo</button>
+  </div>
+
+  <div class="toolbar">
+    <input id="q" placeholder="Cerca nome o squadra" oninput="render()" style="flex:1 1 200px">
+    <select id="fr" onchange="render()">
+      <option value="">Tutti i ruoli</option><option value="P">Portieri</option>
+      <option value="D">Difensori</option><option value="C">Centrocampisti</option><option value="A">Attaccanti</option>
+    </select>
+    <select id="fs" onchange="render()">
+      <option value="">Tutti gli stati</option><option value="target">Da prendere</option>
+      <option value="got">Presi</option><option value="lost">Persi</option>
+    </select>
+  </div>
+
+  <div id="list"></div>
+ </div>
+</div>
+
+<div class="undo" id="undo"><span id="undoT"></span><button onclick="undo()">Annulla</button></div>
+
+<footer>
+  <div>Prezzi tarati su 11 partecipanti · 1000 crediti · 25 giocatori · rilancio. Dati aggiornati al 02/09/2026.</div>
+  <div>Il numero nel riquadro e' il prezzo obiettivo: correggilo e premi Preso</div>
+</footer>
+
+<script>
+const BASE=[
+ ["P","Carnesecchi","Atalanta",85,110,6.39,1,"MV piu\' alta del ruolo, 0 amm in 37 pres. Il perno del modificatore"],
+ ["P","Svilar","Roma",80,100,6.27,1,"18 clean sheet, 38 presenze. Alternativa equivalente a Carnesecchi"],
+ ["P","Falcone","Lecce",40,55,6.33,2,"MV 6,33 con 38 presenze: la miglior MV per credito del ruolo"],
+ ["P","Vicario","Juventus",60,80,null,2,"Nuovo titolare bianconero, confermato nelle prime 3 giornate"],
+ ["P","Corvi","Parma",30,42,6.32,3,"MV altissima, Parma a zero ammonizioni"],
+ ["P","Montipo","Venezia",15,22,6.2,3,"Titolare della neopromossa, MV solida"],
+ ["P","Sportiello","Atalanta",8,12,5.25,3,"Vice di Carnesecchi: copre l\'unico rischio del tuo titolare"],
+ ["P","Audero","Como",8,12,6.13,3,"Riempitivo con MV decente"],
+ ["D","Bremer","Juventus",70,90,6.37,1,"2a MV del ruolo dopo Dimarco, a un terzo del prezzo. Titolare confermato"],
+ ["D","Kalulu","Juventus",45,60,6.18,1,"37 presenze su 38 e sole 2 amm: continuita\' pura per il modificatore"],
+ ["D","Pavlovic","Milan",42,55,6.18,1,"5 gol da centrale, titolare nel 3-4-2-1 di Amorim"],
+ ["D","Solet","Udinese",40,55,6.17,1,"1 sola ammonizione in tutta la stagione"],
+ ["D","Spinazzola","Napoli",38,52,6.17,2,"3 gol e 4 assist con 1 amm: MV da modificatore piu\' bonus"],
+ ["D","Ndicka","Roma",28,38,6.15,2,"Difesa della Roma di Gasperini, 31 presenze"],
+ ["D","Akanji","Inter",25,35,6.15,2,"32 presenze nella difesa che subisce meno"],
+ ["D","Bisseck","Inter",22,32,6.21,2,"MV alta ma 23 presenze: ruota con Akanji e Bastoni"],
+ ["D","Di Lorenzo","Napoli",22,30,6.06,2,"Capitano, rinnovo appena firmato: titolarita\' blindata"],
+ ["D","Chalobah","Como",18,26,null,3,"Ha preso il posto di Kempf al centro della difesa"],
+ ["D","Delprato","Parma",15,22,6.07,3,"35 presenze, prezzo da riempitivo"],
+ ["D","Heggem","Bologna",14,20,6.04,3,"0 ammonizioni in 25 presenze"],
+ ["D","Valeri","Parma",12,18,6.08,3,"Piazzati #3: qualche bonus in piu\' del prezzo"],
+ ["D","Vojvoda","Udinese",10,15,6.08,3,"Titolare sulla fascia, riempitivo affidabile"],
+ ["D","Mancini","Roma",35,45,6.29,3,"MV alta MA 9 ammonizioni: ogni giallo affossa il modificatore. Solo a saldo"],
+ ["D","Dimarco","Inter",150,190,6.5,3,"18 assist, ma col modificatore quattro difensori solidi rendono di piu\'"],
+ ["C","Modric","Milan",95,120,6.46,1,"MV 6,46: la piu\' alta del ruolo. Il centrocampista che vale di piu\' in questa lega"],
+ ["C","McTominay","Napoli",100,130,6.42,1,"MV 6,42 con 33 presenze. Voto alto ogni settimana, non solo quando segna"],
+ ["C","Paz","Como",105,135,6.41,2,"MV 6,41 e 12 gol. Costa il bonus, ma la MV la giustifica"],
+ ["C","Calhanoglu","Inter",100,130,6.39,2,"MV 6,39 ma 22 presenze: il rischio e\' la continuita\', non il rendimento"],
+ ["C","Baturina","Como",55,72,6.33,1,"MV 6,33 e 0 ammonizioni in 25 presenze: profilo perfetto da modificatore"],
+ ["C","Atta","Fiorentina",60,78,6.31,1,"MV 6,31 su 32 presenze, intoccabile nel centrocampo viola"],
+ ["C","Da Cunha","Como",50,65,6.31,1,"MV 6,31 e rigorista #1 del Como: alza sia il modificatore sia i bonus"],
+ ["C","Rabiot","Milan",40,55,6.27,1,"MV 6,27 senza dipendere dai bonus. Rivalutato: e\' esattamente il profilo che serve"],
+ ["C","Barella","Inter",38,52,6.26,1,"MV 6,26 su 34 presenze. Voto alto costante, 8 assist"],
+ ["C","Conceicao","Juventus",35,48,6.26,2,"MV 6,26, titolare confermato nelle prime tre giornate"],
+ ["C","Zaniolo","Udinese",28,38,6.23,2,"MV 6,23, ma 8 ammonizioni: i malus non toccano il modificatore, il voto si\'"],
+ ["C","Thorstvedt","Sassuolo",25,34,6.21,2,"MV 6,21 su 31 presenze"],
+ ["C","Mkhitaryan","Inter",22,30,6.2,2,"MV 6,20: regista da voto puro, zero hype, prezzo basso"],
+ ["C","Isaksen","Lazio",20,28,6.13,3,"MV 6,13, titolare nel tridente di Gattuso"],
+ ["C","Ekkelenkamp","Udinese",20,28,6.08,3,"MV 6,08, titolare confermato alla 3a"],
+ ["C","Mandragora","Fiorentina",16,22,6.06,3,"MV 6,06 su 34 presenze"],
+ ["C","Vlasic","Torino",22,30,6.05,3,"Rigorista 5/5, ma MV 6,05 e 7 ammonizioni: declassato, qui i rigori non contano"],
+ ["C","Bernabe","Parma",12,17,6.05,3,"MV 6,05 e 0 ammonizioni in 32 presenze: riempitivo ideale"],
+ ["C","Odgaard","Bologna",12,17,6.01,3,"MV 6,01 ma 22 presenze"],
+ ["C","Frattesi","Lazio",20,28,5.96,3,"2 gol in 2 giornate, ma MV 5,96: declassato, il modificatore non vede i gol"],
+ ["C","Basic","Venezia",6,10,6.09,3,"MV sorprendentemente alta per il prezzo"],
+ ["A","Goncalo Ramos","Milan",190,240,null,1,"IL CAPITANO. Rigorista #1 del Milan: il rigore e\' il modo piu\' affidabile di superare la soglia"],
+ ["A","Kolo Muani","Juventus",180,225,null,1,"Alternativa equivalente a Ramos: titolare confermato e rigorista della Juventus"],
+ ["A","Keinan Davis","Udinese",45,60,6.29,1,"IL VICE. Rigorista 4/4 e titolare confermato: il secondo capitano quando Ramos non gioca"],
+ ["A","Kean","Como",70,92,5.76,2,"Nuovo riferimento di Fabregas. Ridimensionato: ne schieri uno solo"],
+ ["A","Simeone","Torino",45,60,6.18,2,"11 gol, titolare confermato: alternativa piu\' economica al vice"],
+ ["A","Krstovic","Atalanta",45,60,6.14,2,"10 gol e 5 assist, ma Sarri ruota con Scamacca e De Ketelaere"],
+ ["A","Douvikas","Como",40,55,6.11,2,"14 gol, ma l\'arrivo di Kean gli toglie certezze"],
+ ["A","Pinamonti","Lazio",25,35,5.82,3,"Punta del tridente di Gattuso"],
+ ["A","Stulic","Lecce",14,20,null,3,"E\' lui il centravanti del Lecce, non Geubbels"],
+ ["A","Akor Adams","Venezia",12,18,null,3,"Titolare nel tandem con Yeboah"],
+ ["A","Varela","Monza",10,15,null,3,"Punta centrale della neopromossa"],
+ ["A","Piccoli","Bologna",10,15,5.75,3,"Ha vinto il ballottaggio con Dovbyk"],
+ ["A","Mendy","Cagliari",8,12,5.97,3,"Titolare confermato, riempitivo"],
+ ["A","Lautaro Martinez","Inter",250,300,6.43,3,"Il migliore in assoluto. Ma un quarto del budget sull\'unico slot d\'attacco che schieri"]
+];
+const ORDER={P:0,D:1,C:2,A:3};
+const LABEL={P:"Portieri",D:"Difensori",C:"Centrocampisti",A:"Attaccanti"};
+const SLOTS={P:3,D:8,C:8,A:6};
+const TARGET={P:110,D:220,C:350,A:320};
+const BUDGET=1000, TOT=25;
+const KEY='asta2627_live11_25';
+
+function fresh(){
+  return {budget:BUDGET, deleted:[],
+    players:BASE.map((r,i)=>({id:'b'+i, role:r[0], name:r[1], team:r[2], fair:r[3], cap:r[4],
+      mv:r[5], pri:r[6], note:r[7], status:'target', paid:null}))};
+}
+let S=fresh(), last=null, tmr=null, BACKEND='none';
+
+/* ---------- persistenza ---------- */
+function flag(t,c){const e=document.getElementById('save');e.textContent=t;e.style.color=c||'var(--dim2)';}
+let idb=null;
+function openIDB(){
+  return new Promise(res=>{
+    try{
+      if(!window.indexedDB) return res(null);
+      const r=indexedDB.open('asta2627',1);
+      r.onupgradeneeded=()=>r.result.createObjectStore('kv');
+      r.onsuccess=()=>res(r.result);
+      r.onerror=()=>res(null);
+      setTimeout(()=>res(null),1500);
+    }catch(e){res(null);}
+  });
+}
+function idbPut(k,v){
+  return new Promise((res,rej)=>{
+    const t=idb.transaction('kv','readwrite'); t.objectStore('kv').put(v,k);
+    t.oncomplete=res; t.onerror=()=>rej(t.error);
+  });
+}
+function idbGet(k){
+  return new Promise(res=>{
+    const r=idb.transaction('kv','readonly').objectStore('kv').get(k);
+    r.onsuccess=()=>res(r.result||null); r.onerror=()=>res(null);
+  });
+}
+function slim(){
+  return {d:S.deleted,
+    p:S.players.filter(p=>p.status!=='target'||p.paid!=null||p.bid!=null||String(p.id)[0]==='x')
+      .map(p=>String(p.id)[0]==='x'
+        ? {id:p.id,role:p.role,name:p.name,team:p.team,mv:p.mv,status:p.status,paid:p.paid,bid:p.bid}
+        : {id:p.id,status:p.status,paid:p.paid,bid:p.bid,mv:p.mv})};
+}
+function fromSlim(o){
+  return {deleted:o.d||[], players:(o.p||[]).map(p=>Object.assign({},p))};
+}
+function toHash(){
+  try{
+    const j=JSON.stringify(slim());
+    if(j.length>60000) return;
+    history.replaceState(null,'','#a='+encodeURIComponent(j));
+  }catch(e){}
+}
+function readHash(){
+  try{
+    const m=location.hash.match(/^#a=(.*)$/);
+    return m? fromSlim(JSON.parse(decodeURIComponent(m[1]))) : null;
+  }catch(e){return null;}
+}
+
+async function detect(){
+  if(location.protocol==='http:'||location.protocol==='https:'){
+    try{
+      const r=await fetch('api/ping',{cache:'no-store'});
+      if(r.ok){BACKEND='server';return;}
+    }catch(e){}
+  }
+  if(window.storage&&window.storage.set){BACKEND='cloud';return;}
+  try{localStorage.setItem('__t','1');localStorage.removeItem('__t');BACKEND='local';return;}catch(e){}
+  idb=await openIDB();
+  if(idb){
+    try{await idbPut('__t','1'); BACKEND='idb'; return;}catch(e){}
+  }
+  BACKEND='none';
+  const n=document.getElementById('nostore'); if(n) n.style.display='block';
+  window.addEventListener('beforeunload',e=>{
+    if(got().length>0){e.preventDefault(); e.returnValue='';}
+  });
+}
+async function save(){
+  clearTimeout(tmr);
+  tmr=setTimeout(async()=>{
+    try{
+      const s=JSON.stringify(S);
+      if(BACKEND==='server'){
+        const r=await fetch('api/state',{method:'PUT',headers:{'Content-Type':'application/json'},body:s});
+        if(!r.ok) throw new Error('http '+r.status);
+        flag('Sincronizzato '+new Date().toLocaleTimeString('it-IT').slice(0,5),'var(--ok)');
+        return;
+      }
+      if(BACKEND==='cloud') await window.storage.set(KEY,s);
+      else if(BACKEND==='local') localStorage.setItem(KEY,s);
+      else if(BACKEND==='idb') await idbPut(KEY,s);
+      else { toHash(); flag('Salvato nella pagina · '+new Date().toLocaleTimeString('it-IT').slice(0,5),'var(--warn)'); return; }
+      flag('Salvato '+new Date().toLocaleTimeString('it-IT').slice(0,5));
+    }catch(e){flag('Non salvato: usa Esporta backup','var(--bad)');}
+  },250);
+}
+async function load(){
+  await detect();
+  if(BACKEND==='server'){const b=document.getElementById('syncb'); if(b)b.style.display='';}
+  const hv=BACKEND==='server'?null:readHash();
+  if(hv){ merge(hv); flag('Sessione ripresa dalla pagina'); render(); if(BACKEND!=='none') save(); return; }
+  try{
+    let v=null;
+    if(BACKEND==='server'){
+      const r=await fetch('api/state',{cache:'no-store'});
+      if(r.ok){const d=await r.json(); v=d&&d.players?JSON.stringify(d):null;}
+    }
+    else if(BACKEND==='cloud'){const r=await window.storage.get(KEY); v=r&&r.value?r.value:null;}
+    else if(BACKEND==='local') v=localStorage.getItem(KEY);
+    else if(BACKEND==='idb') v=await idbGet(KEY);
+    if(v){merge(JSON.parse(v)); flag('Sessione ripresa');}
+  }catch(e){}
+  render();
+}
+function merge(o){
+  if(!o||!o.players) return;
+  const map={}; o.players.forEach(p=>map[p.id]=p);
+  S=fresh();
+  S.deleted=o.deleted||[];
+  S.players.forEach(p=>{const s=map[p.id]; if(s){p.status=s.status; p.paid=s.paid; if(s.bid!=null)p.bid=s.bid; if(s.mv!=null)p.mv=s.mv;}});
+  o.players.filter(p=>String(p.id).startsWith('x')).forEach(p=>S.players.push(p));
+  S.players=S.players.filter(p=>!S.deleted.includes(p.id));
+}
+
+/* ---------- calcoli ---------- */
+const got=()=>S.players.filter(p=>p.status==='got');
+const spesi=()=>got().reduce((s,p)=>s+(+p.paid||0),0);
+const rim=()=>BUDGET-spesi();
+const slotLiberi=()=>TOT-got().length;
+const maxBid=()=>Math.max(0, rim()-Math.max(0,slotLiberi()-1));
+
+function modificatore(){
+  const p=got().filter(x=>x.role==='P'&&x.mv!=null).sort((a,b)=>b.mv-a.mv)[0];
+  const dAll=got().filter(x=>x.role==='D'&&x.mv!=null).sort((a,b)=>b.mv-a.mv);
+  if(!p||dAll.length<4) return null;
+  const d=dAll.slice(0,3);
+  const mv=(p.mv+d.reduce((s,x)=>s+x.mv,0))/4;
+  let bonus;
+  if(mv>=6.75)bonus=6; else if(mv>=6.50)bonus=5; else if(mv>=6.375)bonus=4;
+  else if(mv>=6.25)bonus=3; else if(mv>=6.125)bonus=2; else if(mv>=6)bonus=1;
+  else if(mv>=5.875)bonus=0; else bonus=-1;
+  return {mv, bonus, quintetto:[p,...d], quarto:dAll[3]};
+}
+
+function modCentro(){
+  const c=got().filter(x=>x.role==='C'&&x.mv!=null).sort((a,b)=>b.mv-a.mv).slice(0,5);
+  if(c.length<5) return null;
+  const somma=c.reduce((s,x)=>s+x.mv,0);
+  return {somma, media:somma/5, cinque:c};
+}
+
+/* ---------- render ---------- */
+function render(){
+  const sp=spesi(), r=rim(), sl=slotLiberi(), mb=maxBid();
+  document.getElementById('rim').textContent=r;
+  document.getElementById('spesi').textContent=sp;
+  document.getElementById('slot').textContent=sl;
+  document.getElementById('maxb').textContent=mb;
+  document.getElementById('sRim').textContent=r;
+  document.getElementById('sPre').textContent=got().length+'/'+TOT;
+  document.getElementById('sMax').textContent=mb;
+
+  const bar=document.getElementById('bar'); bar.innerHTML='';
+  ['P','D','C','A'].forEach(ru=>{
+    const v=got().filter(p=>p.role===ru).reduce((s,p)=>s+(+p.paid||0),0);
+    const i=document.createElement('i');
+    i.style.width=(v/BUDGET*100)+'%'; i.style.background='var(--'+ru+')'; bar.appendChild(i);
+  });
+
+  const rep=document.getElementById('reparti'); rep.innerHTML='';
+  ['P','D','C','A'].forEach(ru=>{
+    const g=got().filter(p=>p.role===ru);
+    const v=g.reduce((s,p)=>s+(+p.paid||0),0);
+    const d=document.createElement('div'); d.className='rep';
+    const dl=v-TARGET[ru], full=g.length===SLOTS[ru];
+    const col= full ? (dl>0?'var(--bad)':'var(--ok)') : (dl>0?'var(--warn)':'var(--dim2)');
+    d.innerHTML='<span><i class="rp" style="background:var(--'+ru+')">'+ru+'</i> '+LABEL[ru]+
+      ' <span class="team">'+g.length+'/'+SLOTS[ru]+'</span></span>'+
+      '<span class="num"><b>'+v+'</b> / '+TARGET[ru]+' <span style="color:'+col+'">'+
+      (dl>=0?'+':'')+dl+'</span></span>';
+    rep.appendChild(d);
+  });
+
+  const m=modificatore();
+  const mv=document.getElementById('modv'), mq=document.getElementById('modq'), ml=document.getElementById('modlist');
+  if(m){
+    mv.textContent=(m.bonus>0?'+':'')+m.bonus;
+    mv.style.color=m.bonus>=2?'var(--ok)':(m.bonus>=1?'var(--warn)':'var(--bad)');
+    mq.textContent='MV media del quintetto: '+m.mv.toFixed(3);
+    ml.innerHTML=m.quintetto.map((x,k)=>'<div class="kv"><span>'+(k?'':'')+x.name+'</span><b class="num">'+x.mv.toFixed(2)+'</b></div>').join('')+
+      (m.quarto?'<div class="kv"><span style="color:var(--dim2)">'+m.quarto.name+' (4o, non conta: serve solo a prendere voto)</span><b class="num" style="color:var(--dim2)">'+m.quarto.mv.toFixed(2)+'</b></div>':'');
+  } else {
+    mv.textContent='—'; mv.style.color='var(--dim2)';
+    mq.textContent='Servono un portiere e quattro difensori con MV inserita.'; ml.innerHTML='';
+  }
+
+  const cc=modCentro();
+  const cv=document.getElementById('ccv'), cq=document.getElementById('ccq'), cl=document.getElementById('cclist');
+  if(cc){
+    cv.textContent=cc.somma.toFixed(2);
+    cv.style.color=cc.media>=6.30?'var(--ok)':(cc.media>=6.15?'var(--warn)':'var(--bad)');
+    cq.textContent='MV media dei cinque: '+cc.media.toFixed(3)+'. Sopra 31,5 di somma sei in vantaggio quasi ovunque.';
+    cl.innerHTML=cc.cinque.map(x=>'<div class="kv"><span>'+x.name+'</span><b class="num">'+x.mv.toFixed(2)+'</b></div>').join('');
+  } else {
+    cv.textContent='—'; cv.style.color='var(--dim2)';
+    cq.textContent='Servono cinque centrocampisti con MV inserita.'; cl.innerHTML='';
+  }
+
+  const al=document.getElementById('alert'); al.innerHTML='';
+  if(r<0) al.innerHTML='<div class="alert b">Budget sforato di '+(-r)+' crediti.</div>';
+  else if(sl>0&&mb<20&&got().length<TOT) al.innerHTML='<div class="alert">Restano '+mb+' crediti spendibili su un singolo giocatore. Da qui in avanti puoi prendere solo riempitivi.</div>';
+  if(got().length===TOT) al.innerHTML='<div class="alert g">Rosa completa. Crediti avanzati: '+r+'.</div>';
+
+  const q=document.getElementById('q').value.trim().toLowerCase();
+  const fr=document.getElementById('fr').value, fs=document.getElementById('fs').value;
+  const list=document.getElementById('list'); list.innerHTML='';
+  ['P','D','C','A'].forEach(ru=>{
+    if(fr&&fr!==ru) return;
+    let ps=S.players.filter(p=>p.role===ru);
+    if(q) ps=ps.filter(p=>(p.name+' '+p.team).toLowerCase().includes(q));
+    if(fs) ps=ps.filter(p=>p.status===fs);
+    if(!ps.length) return;
+    ps.sort((a,b)=>(a.pri||9)-(b.pri||9)||(b.fair||0)-(a.fair||0));
+    const g=got().filter(p=>p.role===ru);
+    const sep=document.createElement('div'); sep.className='sep';
+    sep.innerHTML='<span>'+LABEL[ru]+'</span><span class="num">'+g.length+' / '+SLOTS[ru]+'</span>';
+    list.appendChild(sep);
+    ps.forEach(p=>list.appendChild(rowEl(p)));
+  });
+  save();
+}
+
+function rowEl(p){
+  const d=document.createElement('div');
+  d.className='row'+(p.status==='got'?' done':'')+(p.status==='lost'?' lost':'');
+  const pri=p.pri?'<i class="pri p'+p.pri+'">P'+p.pri+'</i>':'';
+  const mv = p.mv!=null
+    ? '<span class="mvlab">MV <b>'+p.mv.toFixed(2)+'</b></span>'
+    : '<input class="mvin num" type="number" step="0.01" inputmode="decimal" placeholder="MV" oninput="setMV(\''+p.id+'\',this.value)">';
+  const val = p.paid!=null ? p.paid : (p.bid!=null ? p.bid : (p.fair!=null?p.fair:1));
+  const cap = p.cap!=null ? '<span class="cap">non oltre<br><b>'+p.cap+'</b></span>' : '';
+  d.innerHTML=
+   '<div class="r1">'+pri+'<span class="name">'+p.name+'</span><span class="team">'+p.team+'</span>'+mv+'</div>'+
+   (p.note?'<div class="note">'+p.note+'</div>':'')+
+   '<div class="r2">'+
+     '<div class="stepper">'+
+       '<button onclick="bump(\''+p.id+'\',-1)" aria-label="Meno uno">&minus;</button>'+
+       '<input class="num" id="v_'+p.id+'" type="number" inputmode="numeric" value="'+val+'" oninput="setPaidLive(\''+p.id+'\',this.value)">'+
+       '<button onclick="bump(\''+p.id+'\',1)" aria-label="Piu uno">+</button>'+
+     '</div>'+ cap +
+     '<div class="go">'+
+       (p.status==='got'
+         ? '<button onclick="setStatus(\''+p.id+'\',\'target\')">Annulla</button>'
+         : '<button class="p" onclick="take(\''+p.id+'\')">Preso</button>'+
+           '<button class="n" onclick="setStatus(\''+p.id+'\',\''+(p.status==='lost'?'target':'lost')+'\')">'+(p.status==='lost'?'Torna':'Perso')+'</button>')+
+       '<button class="xdel" onclick="del(\''+p.id+'\')" aria-label="Rimuovi">&times;</button>'+
+     '</div>'+
+   '</div>';
+  return d;
+}
+
+function take(id){
+  const p=find(id); if(!p) return;
+  const box=document.getElementById('v_'+id);
+  const v=box? parseInt(box.value) : p.fair;
+  snap(p.name+' preso a '+(v||0));
+  p.status='got'; p.paid=Math.max(0, v||0); render();
+}
+function bump(id,n){
+  const box=document.getElementById('v_'+id); if(!box) return;
+  const v=Math.max(0,(parseInt(box.value)||0)+n);
+  box.value=v;
+  const p=find(id); if(!p) return;
+  if(p.status==='got'){p.paid=v; render();} else {p.bid=v;}
+}
+function setPaidLive(id,v){
+  const p=find(id); if(!p) return;
+  const n = v===''?null:Math.max(0,parseInt(v)||0);
+  if(p.status==='got'){p.paid=n; render();} else {p.bid=n;}
+}
+function setStatus(id,st){ const p=find(id); if(!p)return; snap(p.name+': stato cambiato');
+  p.status=st; if(st!=='got')p.paid=null; render(); }
+function setMV(id,v){ const p=find(id); if(p){p.mv=v===''?null:parseFloat(v); render();} }
+function del(id){ const p=find(id); if(!p)return; snap(p.name+' rimosso');
+  S.deleted.push(id); S.players=S.players.filter(x=>x.id!==id); render(); }
+
+function quickAdd(taken){
+  const n=document.getElementById('qn').value.trim();
+  if(!n) return document.getElementById('qn').focus();
+  const p={id:'x'+Date.now(), role:document.getElementById('qr').value, name:n,
+    team:document.getElementById('qt').value.trim()||'—', fair:null, cap:null, pri:null, note:'',
+    mv:document.getElementById('qm').value===''?null:parseFloat(document.getElementById('qm').value),
+    status:taken?'got':'target',
+    paid:taken?Math.max(0,parseInt(document.getElementById('qp').value)||0):null};
+  snap(n+' aggiunto'); S.players.push(p);
+  ['qn','qt','qp','qm'].forEach(i=>document.getElementById(i).value='');
+  document.getElementById('qn').focus(); render();
+}
+function qkey(e){ if(e.key==='Enter') quickAdd(!e.shiftKey); }
+
+async function pull(){
+  if(BACKEND!=='server') return;
+  try{
+    const r=await fetch('api/state',{cache:'no-store'});
+    if(!r.ok) throw new Error();
+    const d=await r.json();
+    if(d&&d.players){ snap('Stato ricaricato dal server'); merge(d); render(); flag('Ricaricato dal server','var(--ok)'); }
+    else flag('Nessuno stato salvato sul server','var(--warn)');
+  }catch(e){ flag('Server non raggiungibile','var(--bad)'); }
+}
+function exportJSON(){
+  const b=new Blob([JSON.stringify(S,null,1)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b);
+  a.download='asta-2026-27-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+}
+function importJSON(inp){
+  const f=inp.files[0]; if(!f)return; const r=new FileReader();
+  r.onload=()=>{ try{ snap('Backup importato'); merge(JSON.parse(r.result)); render(); }
+    catch(e){ alert('File non valido.'); } };
+  r.readAsText(f); inp.value='';
+}
+function resetAll(){ if(!confirm('Azzeri tutta l\'asta?'))return; snap('Asta azzerata'); S=fresh(); render(); }
+
+load();
+</script>

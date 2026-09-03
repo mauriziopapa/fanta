@@ -1,0 +1,10 @@
+{
+  "name": "gestore-asta-fantacalcio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Gestore asta fantacalcio dal vivo - 11 partecipanti, 1000 crediti, 3-8-8-6",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node server.js",
+    "test": "node test.mjs" }
+}
