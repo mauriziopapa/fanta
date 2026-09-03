@@ -61,6 +61,18 @@
   .quick{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:var(--panel2);
     border:1px solid var(--line);border-radius:5px;padding:9px 10px;margin-bottom:12px}
   .qlab{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--dim2);font-weight:700;width:100%}
+  .qres{display:none;flex:1 1 100%;max-height:260px;overflow-y:auto;
+    border:1px solid var(--line);border-radius:5px;background:#0b0d10;margin-top:-2px}
+  .qres.open{display:block}
+  .qres-item{display:flex;align-items:center;gap:8px;padding:7px 9px;
+    border-bottom:1px solid #1b2027;cursor:pointer}
+  .qres-item:last-child{border-bottom:none}
+  .qres-item:hover,.qres-item:active{background:var(--panel2)}
+  .qres-name{font-weight:600;font-size:13px;flex:1 1 auto;min-width:0;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .qres-team{color:var(--dim);font-size:12px;flex:none}
+  .qres-fvm{color:var(--dim2);font-size:11px;flex:none;min-width:26px;text-align:right}
+  .qres-empty{padding:9px;color:var(--dim2);font-size:12px}
 
   .sep{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--dim);
     font-weight:700;background:#11151a;padding:8px 10px;border-radius:4px;margin:10px 0 6px;
@@ -248,9 +260,11 @@
  <div class="col col-list">
   <div class="quick">
     <div class="qlab">Aggiungi un giocatore non in lista</div>
-    <select id="qr"><option value="P">P</option><option value="D">D</option><option value="C" selected>C</option><option value="A">A</option></select>
-    <input id="qn" placeholder="Nome" onkeydown="qkey(event)">
-    <input id="qt" placeholder="Squadra" onkeydown="qkey(event)">
+    <select id="qr" onchange="onQrChange()"><option value="P">P</option><option value="D">D</option><option value="C" selected>C</option><option value="A">A</option></select>
+    <input id="qn" placeholder="Nome" autocomplete="off" onkeydown="qkey(event)" oninput="onQnInput()">
+    <div class="qres" id="qnResults"></div>
+    <input id="qt" placeholder="Squadra" autocomplete="off" onkeydown="qkey(event)" oninput="onQtInput()">
+    <div class="qres" id="qtResults"></div>
     <input id="qp" class="num" type="number" inputmode="numeric" placeholder="Pagato" onkeydown="qkey(event)">
     <input id="qm" class="num" type="number" step="0.01" inputmode="decimal" placeholder="MV" onkeydown="qkey(event)">
     <button class="p" onclick="quickAdd(true)">Aggiungi come preso</button>
@@ -662,9 +676,70 @@ function quickAdd(taken){
     paid:taken?Math.max(0,parseInt(document.getElementById('qp').value)||0):null};
   snap(n+' aggiunto'); S.players.push(p);
   ['qn','qt','qp','qm'].forEach(i=>document.getElementById(i).value='');
-  document.getElementById('qn').focus(); render();
+  closeResults(); document.getElementById('qn').focus(); render();
 }
 function qkey(e){ if(e.key==='Enter') quickAdd(!e.shiftKey); }
+
+/* ---------- ricerca giocatori (lista_giocatori.json) ---------- */
+let DB=[];
+async function loadDB(){
+  try{
+    const r=await fetch('giocatori.json',{cache:'no-store'});
+    if(r.ok) DB=await r.json();
+  }catch(e){ DB=[]; }
+}
+const like=(hay,needle)=>!!hay && hay.toLowerCase().includes(needle.toLowerCase());
+
+function clearResults(el){ el.innerHTML=''; el.classList.remove('open'); }
+function closeResults(){
+  clearResults(document.getElementById('qnResults'));
+  clearResults(document.getElementById('qtResults'));
+}
+function renderResults(el, matches){
+  el.innerHTML='';
+  if(!matches.length){ el.classList.remove('open'); return; }
+  matches.forEach(p=>{
+    const row=document.createElement('div');
+    row.className='qres-item';
+    row.innerHTML='<span class="qres-name"></span><span class="qres-team"></span><span class="qres-fvm num"></span>';
+    row.querySelector('.qres-name').textContent=p.Nome;
+    row.querySelector('.qres-team').textContent=p.Squadra;
+    row.querySelector('.qres-fvm').textContent=p.FVM;
+    row.onmousedown=e=>{ e.preventDefault(); pickPlayer(p); }; // mousedown: precede il blur dell'input
+    el.appendChild(row);
+  });
+  el.classList.add('open');
+}
+function pickPlayer(p){
+  document.getElementById('qr').value=p.R;
+  document.getElementById('qn').value=p.Nome;
+  document.getElementById('qt').value=p.Squadra;
+  document.getElementById('qm').value=p.FVM;
+  closeResults();
+}
+function onQnInput(){
+  const q=document.getElementById('qn').value.trim();
+  clearResults(document.getElementById('qtResults'));
+  const el=document.getElementById('qnResults');
+  if(!q) return clearResults(el);
+  const role=document.getElementById('qr').value;
+  renderResults(el, DB.filter(p=>p.R===role && like(p.Nome,q)).slice(0,40));
+}
+function onQtInput(){
+  const q=document.getElementById('qt').value.trim();
+  clearResults(document.getElementById('qnResults'));
+  const el=document.getElementById('qtResults');
+  if(!q) return clearResults(el);
+  const role=document.getElementById('qr').value;
+  renderResults(el, DB.filter(p=>p.R===role && like(p.Squadra,q))); // tutti i giocatori della squadra, nessun limite
+}
+function onQrChange(){
+  if(document.getElementById('qn').value.trim()) onQnInput();
+  if(document.getElementById('qt').value.trim()) onQtInput();
+}
+document.addEventListener('click', e=>{
+  if(!e.target.closest('.quick')) closeResults();
+});
 
 async function pull(){
   if(BACKEND!=='server') return;
@@ -690,4 +765,5 @@ function importJSON(inp){
 function resetAll(){ if(!confirm('Azzeri tutta l\'asta?'))return; snap('Asta azzerata'); S=fresh(); render(); }
 
 load();
+loadDB();
 </script>
