@@ -264,7 +264,7 @@
       <option value="D">Difensori</option><option value="C">Centrocampisti</option><option value="A">Attaccanti</option>
     </select>
     <select id="fs" onchange="render()">
-      <option value="">Tutti gli stati</option><option value="target">Da prendere</option>
+      <option value="">Tutti (tranne persi)</option><option value="target">Da prendere</option>
       <option value="got">Presi</option><option value="lost">Persi</option>
     </select>
   </div>
@@ -354,7 +354,23 @@ function fresh(){
     players:BASE.map((r,i)=>({id:'b'+i, role:r[0], name:r[1], team:r[2], fair:r[3], cap:r[4],
       mv:r[5], pri:r[6], note:r[7], status:'target', paid:null}))};
 }
-let S=fresh(), last=null, tmr=null, BACKEND='none';
+let S=fresh(), last=null, tmr=null, undoTmr=null, BACKEND='none';
+
+/* ---------- undo ---------- */
+function find(id){ return S.players.find(p=>p.id===id); }
+function snap(label){
+  last=JSON.stringify(S);
+  const u=document.getElementById('undo'), t=document.getElementById('undoT');
+  t.textContent=label; u.classList.add('on');
+  clearTimeout(undoTmr);
+  undoTmr=setTimeout(()=>u.classList.remove('on'),6000);
+}
+function undo(){
+  if(!last) return;
+  S=JSON.parse(last); last=null;
+  document.getElementById('undo').classList.remove('on');
+  render();
+}
 
 /* ---------- persistenza ---------- */
 function flag(t,c){const e=document.getElementById('save');e.textContent=t;e.style.color=c||'var(--dim2)';}
@@ -570,6 +586,7 @@ function render(){
     let ps=S.players.filter(p=>p.role===ru);
     if(q) ps=ps.filter(p=>(p.name+' '+p.team).toLowerCase().includes(q));
     if(fs) ps=ps.filter(p=>p.status===fs);
+    else ps=ps.filter(p=>p.status!=='lost'); // i persi restano fuori dalla vista finche' non li filtri esplicitamente
     if(!ps.length) return;
     ps.sort((a,b)=>(a.pri||9)-(b.pri||9)||(b.fair||0)-(a.fair||0));
     const g=got().filter(p=>p.role===ru);
