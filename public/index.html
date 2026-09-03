@@ -602,7 +602,7 @@ function render(){
     if(fs) ps=ps.filter(p=>p.status===fs);
     else ps=ps.filter(p=>p.status!=='lost'); // i persi restano fuori dalla vista finche' non li filtri esplicitamente
     if(!ps.length) return;
-    ps.sort((a,b)=>(a.pri||9)-(b.pri||9)||(b.fair||0)-(a.fair||0));
+    ps.sort((a,b)=>(a.pri??9)-(b.pri??9)||(b.fair||0)-(a.fair||0));
     const g=got().filter(p=>p.role===ru);
     const sep=document.createElement('div'); sep.className='sep';
     sep.innerHTML='<span>'+LABEL[ru]+'</span><span class="num">'+g.length+' / '+SLOTS[ru]+'</span>';
@@ -669,12 +669,18 @@ function del(id){ const p=find(id); if(!p)return; snap(p.name+' rimosso');
 function quickAdd(taken){
   const n=document.getElementById('qn').value.trim();
   if(!n) return document.getElementById('qn').focus();
+  const qp=document.getElementById('qp').value, qm=document.getElementById('qm').value;
+  // Pagato esplicito vince sempre; se e' vuoto (es. giocatore preso dalla
+  // ricerca) il valore del campo MV (il FVM del json) vale come prezzo
+  // d'acquisto, cosi' viene scalato dal monte crediti.
+  const paidVal = qp!=='' ? Math.max(0,parseInt(qp)||0)
+                : (qm!=='' ? Math.max(0,Math.round(parseFloat(qm))||0) : 0);
   const p={id:'x'+Date.now(), role:document.getElementById('qr').value, name:n,
-    team:document.getElementById('qt').value.trim()||'—', fair:null, cap:null, pri:null, note:'',
-    mv:document.getElementById('qm').value===''?null:parseFloat(document.getElementById('qm').value),
+    team:document.getElementById('qt').value.trim()||'—', fair:null, cap:null, pri:0, note:'',
+    mv:qm===''?null:parseFloat(qm),
     status:taken?'got':'target',
-    paid:taken?Math.max(0,parseInt(document.getElementById('qp').value)||0):null};
-  snap(n+' aggiunto'); S.players.push(p);
+    paid:taken?paidVal:null};
+  snap(n+' aggiunto'); S.players.unshift(p);
   ['qn','qt','qp','qm'].forEach(i=>document.getElementById(i).value='');
   closeResults(); document.getElementById('qn').focus(); render();
 }
